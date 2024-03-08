@@ -16,6 +16,8 @@ struct ContentView: View {
     @State private var errorMessage = ""
     @State private var showingError = false
     
+    @State private var totalLenght = 0
+    
     var body: some View {
         NavigationStack {
             List {
@@ -33,14 +35,26 @@ struct ContentView: View {
                     }
                 }
             }
-        }
-        .navigationTitle(rootWord)
-        .onSubmit(addNewWord)
-        .onAppear(perform: startGame)
-        .alert(errorTitle, isPresented: $showingError) {
-            Button("OK") { }
-        } message: {
-            Text(errorMessage)
+            Text("Your score is : \(totalLenght)")
+                .font(.title3)
+            Text("Number of words : \(usedWords.count)")
+                .font(.title3)
+            
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("New Game") {
+                        startGame()
+                    }
+                }
+            }
+            .navigationTitle(rootWord)
+            .onSubmit(addNewWord)
+            .onAppear(perform: startGame)
+            .alert(errorTitle, isPresented: $showingError) {
+                Button("OK") { }
+            } message: {
+                Text(errorMessage)
+            }
         }
     }
     
@@ -50,17 +64,27 @@ struct ContentView: View {
         guard answer.count > 0 else { return }
         
         guard isOriginal(word: answer) else {
-            wordError(titile: "Word is already used", message: "Be more original")
+            wordError(title: "Word is already used", message: "Be more original")
             return
         }
         
         guard isPossible(word: answer) else {
-            wordError(titile: "Word not possible", message: "You can't spell that word from '\(rootWord)'")
+            wordError(title: "Word not possible", message: "You can't spell that word from '\(rootWord)'")
             return
         }
         
         guard isReal(word: answer) else {
-            wordError(titile: "Word not recognized", message: "You can't just make them up")
+            wordError(title: "Word not recognized", message: "You can't just make them up")
+            return
+        }
+        
+        guard isTooShort(word: answer) else {
+            wordError(title: "Word is too short", message: "Try a longer one")
+            return
+        }
+        
+        guard isAsInitial(word: answer) else {
+            wordError(title: "Hey, you!", message: "Try to think, not to copy!")
             return
         }
         
@@ -72,6 +96,11 @@ struct ContentView: View {
     }
     
     func startGame() {
+        withAnimation {
+            usedWords = []
+            totalLenght = 0
+        }
+        
         if let startWordsURL = Bundle.main.url(forResource: "start", withExtension: "txt") {
             if let startWords = try? String(contentsOf: startWordsURL) {
                 let allWords = startWords.components(separatedBy: "\n")
@@ -108,10 +137,24 @@ struct ContentView: View {
         return misspelledRange.location == NSNotFound
     }
     
-    func wordError(titile: String, message: String) {
-        errorTitle = titile
-        errorMessage = errorMessage
+    func wordError(title: String, message: String) {
+        errorTitle = title
+        errorMessage = message
         showingError = true
+    }
+    
+    func isTooShort(word: String) -> Bool {
+        word.count > 3
+    }
+    
+    func isAsInitial(word: String) -> Bool {
+        word != rootWord
+    }
+    
+    func calculateScore() {
+        usedWords.forEach { word in
+            totalLenght += word.count
+        }
     }
 }
 
