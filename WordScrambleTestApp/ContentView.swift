@@ -33,14 +33,14 @@ struct ContentView: View {
                     }
                 }
             }
-        }
-        .navigationTitle(rootWord)
-        .onSubmit(addNewWord)
-        .onAppear(perform: startGame)
-        .alert(errorTitle, isPresented: $showingError) {
-            Button("OK") { }
-        } message: {
-            Text(errorMessage)
+            .navigationTitle(rootWord)
+            .onSubmit(addNewWord)
+            .onAppear(perform: startGame)
+            .alert(errorTitle, isPresented: $showingError) {
+                Button("OK") { }
+            } message: {
+                Text(errorMessage)
+            }
         }
     }
     
@@ -99,6 +99,10 @@ struct ContentView: View {
         }
         
         return true
+    }
+    
+    func isTooShort(word: String) {
+        
     }
     
     func isReal(word: String) -> Bool {
