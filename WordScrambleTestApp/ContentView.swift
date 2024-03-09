@@ -41,10 +41,8 @@ struct ContentView: View {
                 .font(.title3)
             
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("New Game") {
+                Button("New Game") {
                         startGame()
-                    }
                 }
             }
             .navigationTitle(rootWord)
@@ -97,9 +95,11 @@ struct ContentView: View {
     
     func startGame() {
         withAnimation {
-            usedWords = []
-            totalLenght = 0
+            usedWords.removeAll()
         }
+
+        totalLenght = 0
+        newWord = ""
         
         if let startWordsURL = Bundle.main.url(forResource: "start", withExtension: "txt") {
             if let startWords = try? String(contentsOf: startWordsURL) {
