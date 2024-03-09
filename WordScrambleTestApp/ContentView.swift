@@ -36,7 +36,7 @@ struct ContentView: View {
                 }
             }
             Text("Your score is : \(totalLenght)")
-                .font(.title3)
+                .font(.title2)
             Text("Number of words : \(usedWords.count)")
                 .font(.title3)
             
