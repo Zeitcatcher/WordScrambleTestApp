@@ -35,15 +35,18 @@ struct ContentView: View {
                     }
                 }
             }
-            Text("Your score is : \(totalLenght)")
-                .font(.title2)
-            Text("Number of words : \(usedWords.count)")
-                .font(.title3)
-            
             .toolbar {
                 Button("New Game") {
                         startGame()
                 }
+            }
+            .safeAreaInset(edge: .bottom) {
+                Text("Score: \(totalLenght)")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(.blue)
+                    .foregroundStyle(.white)
+                    .font(.title3)
             }
             .navigationTitle(rootWord)
             .onSubmit(addNewWord)
